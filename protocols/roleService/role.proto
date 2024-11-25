@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "pb/";
+
+message Role {
+    string id = 1;   
+    string name = 2;
+}
+
+message RolesResp {
+    repeated Role roles = 1;
+}
+
+service RoleService {
+    rpc GetAllRoles(google.protobuf.Empty) returns (RolesResp);
+}

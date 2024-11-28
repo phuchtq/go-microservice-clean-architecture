@@ -4,6 +4,7 @@ import (
 	grpc_gateway "architecture_template/constants/grpcGateway"
 	"architecture_template/constants/notis"
 	"errors"
+	"fmt"
 	"log"
 
 	"google.golang.org/grpc"
@@ -14,7 +15,7 @@ func ConnectRoleService() (*grpc.ClientConn, error) {
 	cnn, err := grpc.NewClient(grpc_gateway.RPCRolePort, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	if err != nil {
-		log.Print("Fail to connect role service: ", err)
+		log.Println(fmt.Sprintf(notis.GrpcConnectMsg, "Role") + err.Error())
 		return nil, errors.New(notis.InternalErr)
 	}
 

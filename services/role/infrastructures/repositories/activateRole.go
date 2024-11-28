@@ -5,34 +5,32 @@ import (
 	"architecture_template/helper"
 	"fmt"
 
-	role_notis "architecture_template/services/role/constants/notis"
 	redis_key "architecture_template/services/role/constants/redisKey"
 	"architecture_template/services/role/entities"
 	"context"
 	"errors"
-	"log"
 )
 
 func (tr *repo) ActivateRole(id string, c context.Context) error {
-	errLogMsg := notis.RoleRepoMsg + "ActivateRole - "
+	var errLogMsg string = notis.RoleRepoMsg + "ActivateRole - "
+	var query string = "Update " + entities.GetTable() + " set activeStatus = true where id = ?"
 
-	query := "Update " + entities.GetTable() + " set activeStatus = true where id = ?"
 	if _, err := tr.db.Exec(query, id); err != nil {
 		tr.db.Close()
-		log.Print(errLogMsg, err)
+		tr.logger.Println(errLogMsg, err)
 		return errors.New(notis.InternalErr)
 	}
 
 	// Refresh cache if exists
-	go helper.RefreshRedisCache[entities.Role](
+	helper.RefreshRedisCache[entities.Role](
 		[]string{ // keys
 			redis_key.GetAllKey,
 			fmt.Sprintf(redis_key.GetByIdKey, id),
 		},
 
 		[]string{ // messages
-			role_notis.RedisMsg,
-			"",
+			notis.RedisExtractDataMsg,
+			notis.RedisRefreshKeyMsg,
 		},
 
 		tr.logger, // logger

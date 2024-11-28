@@ -5,7 +5,6 @@ import (
 	"architecture_template/constants/notis"
 	"architecture_template/helper"
 	"architecture_template/protocols/roleService/pb"
-	user_notis "architecture_template/services/user/constants/notis"
 	redis_key "architecture_template/services/user/constants/redisKey"
 	grpc_connect "architecture_template/services/user/utils/grpcConnect"
 	"context"
@@ -21,18 +20,17 @@ func (r *rolService) GetRoleStorage(isFindId bool, c context.Context) map[string
 		key = redis_key.GetAllRolesBasedNameKey
 	}
 
-	if res := generateRoleDictionaryFromRedisCache(r.redisClient, key, r.logger, c); res != nil || len(res) > 0 {
+	if res := generateRoleDictionaryFromRedisCache(r.redisClient, key, c); res != nil || len(res) > 0 {
 		return res
 	}
 
 	return generateRoleDictionFromGrpc(r.redisClient, key, isFindId, r.logger, c)
 }
 
-func generateRoleDictionaryFromRedisCache(client *redis.Client, key string, logger *log.Logger, c context.Context) map[string]string {
+func generateRoleDictionaryFromRedisCache(client *redis.Client, key string, c context.Context) map[string]string {
 	res, _, isValid := helper.GetDataFromRedis[map[string]string](client, key, c)
 
 	if !isValid {
-		logger.Print(user_notis.RedisMsg)
 		return nil
 	}
 

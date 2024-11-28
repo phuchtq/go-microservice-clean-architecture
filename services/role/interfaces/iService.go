@@ -11,7 +11,7 @@ type IRoleService interface {
 	GetRolesByStatus(rawStatus string, c context.Context) (*[]entities.Role, error)
 	GetRoleById(id string, c context.Context) (*entities.Role, error)
 	CreateRole(name string, c context.Context) error
-	UpdateRole(x entities.Role, c context.Context) error
+	UpdateRole(r entities.Role, c context.Context) error
 	RemoveRole(id string, c context.Context) error
 	ActivateRole(id string, c context.Context) error
 }

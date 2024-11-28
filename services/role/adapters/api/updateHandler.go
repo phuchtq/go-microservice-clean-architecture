@@ -11,11 +11,6 @@ import (
 )
 
 func UpdateRole(c *gin.Context) {
-	// if !isAdminAccess(c.GetString("role")) {
-	// 	c.IndentedJSON(http.StatusForbidden, gin.H{"message": notis.GenericsRightAccessWarnMsg})
-	// 	return
-	// }
-	//-----------------------------------------
 	var role entities.Role
 	if c.ShouldBindJSON(&role) != nil {
 		api_response.ProcessResponse(api_response.GenerateInvalidRequestAndSystemProblemModel(c, nil))

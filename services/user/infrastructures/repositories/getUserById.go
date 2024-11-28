@@ -20,45 +20,44 @@ func (tr *repo) GetUserById(id string, c context.Context) (*entities.User, error
 	if res, err, isValid := helper.GetDataFromRedis[entities.User](tr.redisCache, key, c); isValid {
 		return res, err
 	} else {
-		tr.logger.Print(user_notis.RedisMsg + err.Error()) // Fetching data from cache meets problem
+		tr.logger.Println(user_notis.RedisMsg + err.Error()) // Fetching data from cache meets problem
 	}
 	//-------------------------------------------
 
 	// Retrieve database
 	var errLogMsg string = user_notis.UserRepoMsg + "GetUserById - "
 	var query string = "Select id, email, password, roleId, activeStatus from " + entities.GetTable() + " where id = ?"
+	var storeDataLogPrefixMsg string = fmt.Sprintf(notis.RedisStoreDataMsg, key)
 	var res *entities.User
 
 	if err := tr.db.QueryRow(query, id).Scan(&res.UserId, &res.Email, &res.Pasword, &res.RoleId, &res.ActiveStatus); err != nil && err == sql.ErrNoRows {
 		tr.db.Close()
 
-		if helper.SaveDataToRedis(tr.redisCache, key, response.DataStorage{}, c) != nil {
-			tr.logger.Print(notis.RedisMsg)
+		if err := helper.SaveDataToRedis(tr.redisCache, key, response.DataStorage{}, c); err != nil {
+			tr.logger.Println(storeDataLogPrefixMsg + err.Error())
 		}
 
 		return nil, nil // No data found with incoming ID parameter - actually not considered as an error -> no data and error returned
 	} else if err != nil && err != sql.ErrNoRows {
 		tr.db.Close()
-		tr.logger.Print(errLogMsg, err)
+		tr.logger.Println(errLogMsg, err)
 
 		var internalErr error = errors.New(notis.InternalErr)
 
-		if helper.SaveDataToRedis(tr.redisCache, key, response.DataStorage{
+		if err := helper.SaveDataToRedis(tr.redisCache, key, response.DataStorage{
 			ErrMsg: internalErr,
-		}, c) != nil {
-			tr.logger.Print(notis.RedisMsg)
+		}, c); err != nil {
+			tr.logger.Println(storeDataLogPrefixMsg + err.Error())
 		}
 
 		return nil, internalErr
 	}
 
-	go func() {
-		if helper.SaveDataToRedis(tr.redisCache, key, response.DataStorage{
-			Data: res,
-		}, c) != nil {
-			tr.logger.Print(notis.RedisMsg + helper.ConvertModelToString(res))
-		}
-	}()
+	if helper.SaveDataToRedis(tr.redisCache, key, response.DataStorage{
+		Data: res,
+	}, c) != nil {
+		tr.logger.Println(storeDataLogPrefixMsg + helper.ConvertModelToString(res))
+	}
 
 	tr.db.Close()
 

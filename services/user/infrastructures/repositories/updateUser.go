@@ -18,41 +18,41 @@ func (tr *repo) UpdateUser(u entities.User, c context.Context) error {
 	res, err := tr.db.Exec(query, u.Email, u.Pasword, u.RoleId, u.AccessToken, u.RefreshToken, u.ActiveStatus, u.FailAccess, u.LastFail, u.UserId)
 	if err != nil {
 		tr.db.Close()
-		tr.logger.Print(errLogMsg, err)
+		tr.logger.Println(errLogMsg, err)
 		return errors.New(notis.InternalErr)
 	}
 
 	rowsAffected, err := res.RowsAffected()
+
 	if err != nil {
 		tr.db.Close()
-		tr.logger.Print(errLogMsg, err)
+		tr.logger.Println(errLogMsg, err)
 		return errors.New(notis.InternalErr)
 	}
+
 	if rowsAffected == 0 {
 		tr.db.Close()
 		return errors.New(user_notis.UndefinedUserWarnMsg)
 	}
 
 	// Refresh cache if exists
-	go func() {
-		helper.RefreshRedisCache[entities.User](
-			[]string{ // keys
-				redis_key.GetAllKey,
-				fmt.Sprintf(redis_key.GetByIdKey, u.UserId),
-			},
+	helper.RefreshRedisCache[entities.User](
+		[]string{ // keys
+			redis_key.GetAllKey,
+			fmt.Sprintf(redis_key.GetByIdKey, u.UserId),
+		},
 
-			[]string{ // messages
-				user_notis.RedisMsg,
-				"",
-			},
+		[]string{ // messages
+			notis.RedisExtractDataMsg,
+			notis.RedisRefreshKeyMsg,
+		},
 
-			tr.logger, // logger
+		tr.logger, // logger
 
-			tr.redisCache, // redis client
+		tr.redisCache, // redis client
 
-			c, // context
-		)
-	}()
+		c, // context
+	)
 
 	tr.db.Close()
 	return nil

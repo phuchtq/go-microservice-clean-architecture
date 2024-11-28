@@ -13,32 +13,29 @@ import (
 )
 
 func (tr *repo) ChangeUserStatus(status bool, id string, c context.Context) error {
-	errLogMsg := user_notis.UserRepoMsg + "ChangeUserStatus - "
-	lastFailValueQuery := "NULL"
+	var errLogMsg string = user_notis.UserRepoMsg + "ChangeUserStatus - "
+	var lastFailValueQuery string = "NULL"
 	if status {
 		lastFailValueQuery = fmt.Sprint(time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC))
 	}
 
-	query := "Update " + entities.GetTable() + " set activeStatus = " + fmt.Sprint(status) + ", failAccess = 0, lastFail = " + lastFailValueQuery + ", accessToken = NULL, refreshToken = NULL, actionPeriod = NULL, actionToken = NULL, isHaveToResetPw = NULL where id = ?"
+	var query string = "Update " + entities.GetTable() + " set activeStatus = " + fmt.Sprint(status) + ", failAccess = 0, lastFail = " + lastFailValueQuery + ", accessToken = NULL, refreshToken = NULL, actionPeriod = NULL, actionToken = NULL, isHaveToResetPw = NULL where id = ?"
 	if _, err := tr.db.Exec(query, id); err != nil {
 		tr.db.Close()
-		tr.logger.Print(errLogMsg, err)
+		tr.logger.Println(errLogMsg, err)
 		return errors.New(notis.InternalErr)
 	}
 
-	// users, err := helper.GetDataFromRedis[[]entities.User](tr.redisCache, redis_key.GetAllKey, c)
-	// user, _ := tr.GetUserById(id, c)
-
 	// Refresh data in cache
-	go helper.RefreshRedisCache[entities.User](
+	helper.RefreshRedisCache[entities.User](
 		[]string{ // keys
 			redis_key.GetAllKey,
 			id,
 		},
 
 		[]string{ // messages
-			user_notis.RedisMsg,
-			"",
+			notis.RedisExtractDataMsg,
+			notis.RedisRefreshKeyMsg,
 		},
 
 		tr.logger, // logger

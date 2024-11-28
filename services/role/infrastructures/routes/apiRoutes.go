@@ -1,36 +1,50 @@
 package routes
 
 import (
+	"architecture_template/constants/notis"
+	"architecture_template/middlewares/authorization"
 	"architecture_template/services/role/adapters/api"
+	envvar "architecture_template/services/role/constants/envVar"
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	backUpApiPort string = "Your back up api port"
+)
+
 func InitializeAPIRoutes() {
-	server := gin.Default()
+	var server = gin.Default()
+	var logger = &log.Logger{}
 	//-----------------------------------------
-	port := os.Getenv("PORT")
+	var port string = os.Getenv(envvar.ApiPort)
 	if port == "" {
-		port = "8080"
+		logger.Println(fmt.Sprintf(notis.ApiPortEnvNotSetMsg, "Role"))
+		port = backUpApiPort
 	}
+	//-----------------------------------------
+	var contextPath string = "roles"
+	//-----------------------------------------
+	var adminAuthGroup = server.Group(contextPath, authorization.Authorize, authorization.AdminAuhthorization)
+	//-----------------------------------------
+	adminAuthGroup.GET("", api.GetAllRoles)
+	adminAuthGroup.GET("/name/:name", api.GetRolesByName)
+	adminAuthGroup.GET("/status/:status", api.GetRolesByStatus)
+	adminAuthGroup.POST("/:name", api.CreateRole)
+	adminAuthGroup.PUT("", api.UpdateRole)
+	adminAuthGroup.PUT("/:id", api.ActivateRole)
+	adminAuthGroup.DELETE("/:id", api.RemoveRole)
+	//-----------------------------------------
+	var authGroup = server.Group(contextPath, authorization.Authorize)
+	//-----------------------------------------
+	authGroup.GET("/:id", api.GetRoleById)
+	//-----------------------------------------
+	logger.Println("Role service starts on port: ", port)
 	//-----------------------------------------
 	if err := server.Run(":" + port); err != nil {
-		log.Fatal("InitializeAPIRoutes meet an unexpected error: ", err)
+		logger.Fatalln(fmt.Sprintf(notis.GinMsg, "Role") + err.Error())
 	}
-	//-----------------------------------------
-	group := server.Group("roles", nil)
-	//-----------------------------------------
-	group.GET("", api.GetAllRoles)
-	group.GET("/name/:name", api.GetRolesByName)
-	group.GET("/status/:status", api.GetRolesByStatus)
-	group.GET("/:id", api.GetRoleById)
-	//-----------------------------------------
-	group.POST("/:name", api.CreateRole)
-	//-----------------------------------------
-	group.PUT("", api.UpdateRole)
-	group.PUT("/:id", api.ActivateRole)
-	//-----------------------------------------
-	group.DELETE("/:id", api.RemoveRole)
 }

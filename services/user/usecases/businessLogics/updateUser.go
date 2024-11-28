@@ -107,7 +107,7 @@ func verifyEditEmail(originUser *entities.User, email string, repo interfaces.IR
 	*originUser.ActionPeriod = time.Now().UTC()
 	*originUser.ActionToken = actionToken
 
-	if err := helper.SendMail(request.SendMailReqDto{
+	return helper.SendMail(request.SendMailReqDto{
 		Body: common_request.MailBody{ // Mail body
 			Email: email,
 			Url: utils.GenerateCallBackUrl([]string{
@@ -124,9 +124,5 @@ func verifyEditEmail(originUser *entities.User, email string, repo interfaces.IR
 		Subject: notis.UpdateMailSubject,
 
 		Logger: logger,
-	}); err != nil {
-		return err
-	}
-
-	return nil
+	})
 }

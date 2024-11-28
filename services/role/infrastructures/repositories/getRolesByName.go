@@ -12,7 +12,6 @@ import (
 	redis_key "architecture_template/services/role/constants/redisKey"
 	"context"
 	"errors"
-	"log"
 )
 
 func (tr *repo) GetRolesByName(name string, c context.Context) (*[]entities.Role, error) {
@@ -22,24 +21,26 @@ func (tr *repo) GetRolesByName(name string, c context.Context) (*[]entities.Role
 	if res, err, isValid := helper.GetDataFromRedis[[]entities.Role](tr.redisClient, key, c); isValid {
 		return res, err
 	} else {
-		tr.logger.Print(role_notis.RedisMsg + err.Error()) // Fetching data from cache meets problem
+		tr.logger.Println(role_notis.RedisMsg + err.Error()) // Fetching data from cache meets problem
 	}
 	//-------------------------------------------
 
 	// Retrieve database
-	errLogMsg := notis.RoleRepoMsg + "GetRolesByName - "
-	query := "Select * from " + entities.GetTable() + " where lower(roleName) like lower($1)"
+	var errLogMsg string = notis.RoleRepoMsg + "GetRolesByName - "
+	var query string = "Select * from " + entities.GetTable() + " where lower(roleName) like lower($1)"
 	var internalErr error = errors.New(notis.InternalErr)
+	var storeDataLogPrefixMsg string = fmt.Sprintf(notis.RedisStoreDataMsg, key)
+
 	rows, err := tr.db.Query(query, "%"+name+"%")
 
 	if err != nil {
 		tr.db.Close()
-		log.Print(errLogMsg, err)
+		tr.logger.Println(errLogMsg, err)
 
-		if helper.SaveDataToRedis(tr.redisClient, key, response.DataStorage{
+		if err := helper.SaveDataToRedis(tr.redisClient, key, response.DataStorage{
 			ErrMsg: internalErr,
-		}, c) != nil {
-			tr.logger.Print(notis.RedisMsg)
+		}, c); err != nil {
+			tr.logger.Println(storeDataLogPrefixMsg + err.Error())
 		}
 
 		return nil, internalErr
@@ -52,12 +53,12 @@ func (tr *repo) GetRolesByName(name string, c context.Context) (*[]entities.Role
 
 		if err := rows.Scan(&x.RoleId, &x, x.RoleName, &x.ActiveStatus); err != nil {
 			tr.db.Close()
-			log.Print(errLogMsg, err)
+			tr.logger.Println(errLogMsg, err)
 
-			if helper.SaveDataToRedis(tr.redisClient, key, response.DataStorage{
+			if err := helper.SaveDataToRedis(tr.redisClient, key, response.DataStorage{
 				ErrMsg: internalErr,
-			}, c) != nil {
-				tr.logger.Print(notis.RedisMsg)
+			}, c); err != nil {
+				tr.logger.Println(storeDataLogPrefixMsg + err.Error())
 			}
 
 			return nil, internalErr
@@ -69,7 +70,7 @@ func (tr *repo) GetRolesByName(name string, c context.Context) (*[]entities.Role
 	if helper.SaveDataToRedis(tr.redisClient, key, response.DataStorage{
 		Data: res,
 	}, c) != nil { // Save data to cache for next request
-		tr.logger.Print(notis.RedisMsg + helper.ConvertModelToString(res))
+		tr.logger.Println(storeDataLogPrefixMsg + helper.ConvertModelToString(res))
 	}
 
 	return res, nil

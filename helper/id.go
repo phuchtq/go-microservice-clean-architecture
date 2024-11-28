@@ -3,13 +3,14 @@ package helper
 import (
 	model_types "architecture_template/constants/modelTypes"
 	"fmt"
+	"math/rand"
 )
 
 func GenerateId(entity string, n int) string {
 	prefix, format := getFormat(entity)
 
 	if prefix == "" || format == "" {
-		return ""
+		return fmt.Sprint(rand.Int())
 	}
 
 	return prefix + fmt.Sprintf(format, n+1)

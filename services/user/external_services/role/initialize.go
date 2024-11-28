@@ -12,6 +12,7 @@ type rolService struct {
 	logger      *log.Logger
 }
 
+// Initialize external role service by connecting role gRPC
 func InitializeExternalRoleService(redisClient *redis.Client, logger *log.Logger) external_services.IRole {
 	return &rolService{
 		logger:      logger,

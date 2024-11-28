@@ -3,13 +3,11 @@ package repositories
 import (
 	"architecture_template/constants/notis"
 	"architecture_template/helper"
-	role_notis "architecture_template/services/role/constants/notis"
 	redis_key "architecture_template/services/role/constants/redisKey"
 	"architecture_template/services/role/entities"
 	"context"
 	"errors"
 	"fmt"
-	"log"
 )
 
 func (tr *repo) UpdateRole(r entities.Role, c context.Context) error {
@@ -18,12 +16,12 @@ func (tr *repo) UpdateRole(r entities.Role, c context.Context) error {
 
 	if res, err := tr.db.Exec(query, r.RoleName, r.ActiveStatus, r.RoleId); err != nil {
 		tr.db.Close()
-		log.Print(errLogMsg, err)
+		tr.logger.Println(errLogMsg, err)
 		return errors.New(notis.InternalErr)
 	} else {
 		if rowsAffected, err := res.RowsAffected(); err != nil {
 			tr.db.Close()
-			log.Print(errLogMsg, err)
+			tr.logger.Println(errLogMsg, err)
 			return errors.New(notis.InternalErr)
 		} else if rowsAffected == 0 {
 			return errors.New(notis.UndefinedRoleWarnMsg)
@@ -33,15 +31,15 @@ func (tr *repo) UpdateRole(r entities.Role, c context.Context) error {
 	tr.db.Close()
 
 	// Refresh cache if exists
-	go helper.RefreshRedisCache[entities.Role](
+	helper.RefreshRedisCache[entities.Role](
 		[]string{ // keys
 			redis_key.GetAllKey,
 			fmt.Sprintf(redis_key.GetByIdKey, r.RoleId),
 		},
 
 		[]string{ // messages
-			role_notis.RedisMsg,
-			"",
+			notis.RedisExtractDataMsg,
+			notis.RedisRefreshKeyMsg,
 		},
 
 		tr.logger, // logger

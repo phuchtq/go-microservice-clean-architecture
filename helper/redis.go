@@ -5,6 +5,7 @@ import (
 	"architecture_template/constants/notis"
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -42,19 +43,19 @@ func RefreshRedisCache[T any](keys, messages []string, logger *log.Logger, clien
 	if len(keys) > 1 {
 		go processRefrechCache[T](keys[1], messages, logger, client, c)
 	}
+
+	time.Sleep(time.Second)
 }
 
 func processRefrechCache[T any](key string, messages []string, logger *log.Logger, client *redis.Client, c context.Context) {
-	data, _, isValid := GetDataFromRedis[T](client, key, c)
+	_, _, isValid := GetDataFromRedis[T](client, key, c)
 
 	if !isValid {
-		logger.Println(messages[0])
+		logger.Println(fmt.Sprintf(messages[0], key))
 	}
 
-	if data != nil {
-		if removeDataFromRedis(client, key, c) != nil {
-			logger.Println(messages[1])
-		}
+	if removeDataFromRedis(client, key, c) != nil {
+		logger.Println(fmt.Sprintf(messages[1], key))
 	}
 }
 
@@ -66,10 +67,11 @@ func extractDataFromRedis[T any](client *redis.Client, key string, c context.Con
 	cachedData, err := client.Get(c, key).Result()
 
 	if err == redis.Nil {
-		return nil, errors.New(notis.UndefinedDataWarnMsg + " with keyword: " + key) // No matched keyword found
+		return nil, errors.New(notis.UndefinedDataWarnMsg + " in Redis with keyword: " + key) // No matched keyword found
 	}
 
 	if err != nil {
+		log.Print(notis.RedisExtractDataMsg + err.Error())
 		return nil, err
 	}
 

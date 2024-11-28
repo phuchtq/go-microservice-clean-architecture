@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	external_services "architecture_template/services/user/external_services"
+	external_services "architecture_template/services/user/external_services/role"
 	"architecture_template/services/user/interfaces"
 	external_iservices "architecture_template/services/user/interfaces/external_services"
 	"database/sql"
@@ -17,11 +17,11 @@ type repo struct {
 	externalRoleService external_iservices.IRole
 }
 
-func InitializeRepository(db *sql.DB, logger *log.Logger, redisCache *redis.Client) interfaces.IRepository {
+func InitializeRepository(db *sql.DB, logger *log.Logger, redisClient *redis.Client) interfaces.IRepository {
 	return &repo{
 		db:                  db,
 		logger:              logger,
-		redisCache:          redisCache,
-		externalRoleService: external_services.GenerateExternalServices(redisCache, logger),
+		redisCache:          redisClient,
+		externalRoleService: external_services.InitializeExternalRoleService(redisClient, logger),
 	}
 }

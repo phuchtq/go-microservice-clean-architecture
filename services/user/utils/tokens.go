@@ -52,7 +52,7 @@ func ExtractDataFromToken(tokenString string, logger *log.Logger) (string, strin
 	})
 
 	if err != nil {
-		logger.Print("Error at ExtractDataFromToken - ", err)
+		logger.Println("Error at ExtractDataFromToken - ", err)
 		return "", "", helper.GetPrimitiveTime(), errors.New(notis.GenericsErrorWarnMsg)
 	}
 

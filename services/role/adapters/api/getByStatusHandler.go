@@ -10,11 +10,6 @@ import (
 )
 
 func GetRolesByStatus(c *gin.Context) {
-	// if !isAdminAccess(c.GetString("role")) {
-	// 	c.IndentedJSON(http.StatusForbidden, gin.H{"message": notis.GenericsRightAccessWarnMsg})
-	// 	return
-	// }
-	//-----------------------------------------
 	service, err := business_logics.GenerateService()
 	if err != nil {
 		api_response.ProcessResponse(api_response.GenerateInvalidRequestAndSystemProblemModel(c, err))

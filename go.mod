@@ -6,12 +6,20 @@ require github.com/gin-gonic/gin v1.10.0
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/go-playground/validator v9.31.0+incompatible // indirect
 	github.com/go-redis/redis v6.15.9+incompatible // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/redis/go-redis v6.15.9+incompatible // indirect
+	github.com/spf13/cobra v1.8.1 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/streadway/amqp v1.1.0 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
+	github.com/stretchr/testify v1.10.0 // indirect
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/mail.v2 v2.3.1 // indirect

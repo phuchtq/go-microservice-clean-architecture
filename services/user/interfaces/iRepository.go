@@ -14,6 +14,7 @@ type IRepository interface {
 	AddUser(u entities.User, c context.Context) error
 	UpdateUser(u entities.User, c context.Context) error
 	ChangeUserStatus(status bool, id string, c context.Context) error
+
 	// External service
 	GetAllRoles(isFindId bool, c context.Context) map[string]string
 }

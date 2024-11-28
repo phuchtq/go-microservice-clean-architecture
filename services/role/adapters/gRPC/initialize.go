@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"architecture_template/constants/notis"
+	"architecture_template/protocols/roleService/pb"
 	"architecture_template/services/role/interfaces"
 	businesslogics "architecture_template/services/role/usecases/businessLogics"
 	"errors"
@@ -9,9 +10,10 @@ import (
 
 type grpcServer struct {
 	service interfaces.IRoleService
+	pb.UnimplementedRoleServiceServer
 }
 
-func GenerateGRPCSerice() (*grpcServer, error) {
+func GenerateGRPCService() (*grpcServer, error) {
 	service, err := businesslogics.GenerateService()
 
 	if err != nil {

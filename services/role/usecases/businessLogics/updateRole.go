@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-func (tr *service) UpdateRole(x entities.Role, c context.Context) error {
-	res, err := tr.roleRepo.GetRoleById(x.RoleId, c)
+func (s *service) UpdateRole(x entities.Role, c context.Context) error {
+	res, err := s.roleRepo.GetRoleById(x.RoleId, c)
 	if err != nil {
 		return err
 	}
@@ -21,5 +21,5 @@ func (tr *service) UpdateRole(x entities.Role, c context.Context) error {
 		res.RoleName = strings.TrimSpace(x.RoleName)
 	}
 
-	return tr.roleRepo.UpdateRole(*res, c)
+	return s.roleRepo.UpdateRole(*res, c)
 }

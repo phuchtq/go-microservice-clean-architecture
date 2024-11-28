@@ -20,21 +20,21 @@ func (tr *repo) GetRoleById(id string, c context.Context) (*entities.Role, error
 	if res, err, isValid := helper.GetDataFromRedis[entities.Role](tr.redisClient, key, c); isValid {
 		return res, err
 	} else {
-		tr.logger.Print(role_notis.RedisMsg + err.Error()) // Fetching data from cache meets problem
+		tr.logger.Println(role_notis.RedisMsg + err.Error()) // Fetching data from cache meets problem
 	}
 	//-------------------------------------------
 
 	// Retrieve database
 	var errLogMsg string = notis.RoleRepoMsg + "GetRoleById - "
 	var query string = "Select * from " + entities.GetTable() + " where roleId = $1"
-
+	var storeDataLogPrefixMsg string = fmt.Sprintf(notis.RedisStoreDataMsg, key)
 	var res *entities.Role
 
 	if err := tr.db.QueryRow(query, id).Scan(&res.RoleId, &res.RoleName, &res.ActiveStatus); err != nil && err == sql.ErrNoRows {
 		tr.db.Close()
 
-		if helper.SaveDataToRedis(tr.redisClient, key, response.DataStorage{}, c) != nil {
-			tr.logger.Print(notis.RedisMsg)
+		if err := helper.SaveDataToRedis(tr.redisClient, key, response.DataStorage{}, c); err != nil {
+			tr.logger.Println(storeDataLogPrefixMsg + err.Error())
 		}
 
 		return nil, nil // No data found with incoming ID parameter - actually not considered as an error -> no data and error returned
@@ -42,12 +42,12 @@ func (tr *repo) GetRoleById(id string, c context.Context) (*entities.Role, error
 		var internalErr error = errors.New(notis.InternalErr)
 
 		tr.db.Close()
-		tr.logger.Print(errLogMsg, err) // Error but bot caused of None-data found - Return error
+		tr.logger.Println(errLogMsg, err) // Error but bot caused of None-data found - Return error
 
-		if helper.SaveDataToRedis(tr.redisClient, key, response.DataStorage{
+		if err := helper.SaveDataToRedis(tr.redisClient, key, response.DataStorage{
 			ErrMsg: internalErr,
-		}, c) != nil {
-			tr.logger.Print(notis.RedisMsg)
+		}, c); err != nil {
+			tr.logger.Println(storeDataLogPrefixMsg + err.Error())
 		}
 
 		return nil, internalErr
@@ -55,7 +55,7 @@ func (tr *repo) GetRoleById(id string, c context.Context) (*entities.Role, error
 	tr.db.Close()
 
 	if err := helper.SaveDataToRedis(tr.redisClient, fmt.Sprintf(redis_key.GetByIdKey, id), response.DataStorage{}, c); err != nil { // Save data to cache for next request
-		tr.logger.Print(notis.RedisMsg + helper.ConvertModelToString(res))
+		tr.logger.Println(storeDataLogPrefixMsg + helper.ConvertModelToString(res))
 	}
 
 	return res, nil

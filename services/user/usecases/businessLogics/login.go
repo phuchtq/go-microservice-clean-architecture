@@ -117,25 +117,23 @@ func prepareActivateAccount(acc *entities.User, logger *log.Logger) error {
 	acc.ActionToken = &actionToken
 	*acc.ActionPeriod = time.Now().UTC()
 
-	return helper.SendMail(
-		common_request.SendMailReqDto{
-			Body: common_request.MailBody{ // Mail body
-				Email: acc.Email,
-				Url: utils.GenerateCallBackUrl([]string{
-					getProcessUrl(),
-					actionToken,
-					acc.UserId,
-					activateType,
-				}, seperateChar),
-			},
-
-			TemplatePath: mailconst.AccountRegistrationTemplate, // Template path
-
-			Subject: notis.RegistrationAccountSubject,
-
-			Logger: logger, // Logger
+	return helper.SendMail(common_request.SendMailReqDto{
+		Body: common_request.MailBody{ // Mail body
+			Email: acc.Email,
+			Url: utils.GenerateCallBackUrl([]string{
+				getProcessUrl(),
+				actionToken,
+				acc.UserId,
+				activateType,
+			}, seperateChar),
 		},
-	)
+
+		TemplatePath: mailconst.AccountRegistrationTemplate, // Template path
+
+		Subject: notis.RegistrationAccountSubject, // Mail subject
+
+		Logger: logger, // Logger
+	})
 }
 
 func refreshAccount(acc *entities.User, repo interfaces.IRepository, c context.Context) error {

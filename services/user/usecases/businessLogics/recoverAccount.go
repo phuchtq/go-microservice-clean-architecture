@@ -58,21 +58,19 @@ func setUpRecoverAccount(account *entities.User, logger *log.Logger) error {
 	*account.ActionPeriod = time.Now().UTC()
 	*account.ActionToken = token
 
-	return helper.SendMail(
-		request.SendMailReqDto{
-			Body: request.MailBody{ // Mail body
-				Email: account.Email,
-				Url: utils.GenerateCallBackUrl([]string{
-					getProcessUrl(),
-					token,
-				}, seperateChar),
-			},
-
-			TemplatePath: mailconst.AccountRecoveryTemplate, // Template path for generating mail
-
-			Subject: notis.RecoverAccountSubject, // Mail subject
-
-			Logger: logger, // Logger
+	return helper.SendMail(request.SendMailReqDto{
+		Body: request.MailBody{ // Mail body
+			Email: account.Email,
+			Url: utils.GenerateCallBackUrl([]string{
+				getProcessUrl(),
+				token,
+			}, seperateChar),
 		},
-	)
+
+		TemplatePath: mailconst.AccountRecoveryTemplate, // Template path for generating mail
+
+		Subject: notis.RecoverAccountSubject, // Mail subject
+
+		Logger: logger, // Logger
+	})
 }

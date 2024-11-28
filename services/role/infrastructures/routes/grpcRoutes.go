@@ -38,7 +38,7 @@ func InitializeGRPCRoute() {
 
 	rsServer, err := role_grpc.GenerateGRPCService()
 	if err != nil {
-		logger.Println(fmt.Sprintf(notis.GrpcGenerateMsg, service))
+		logger.Println(fmt.Sprintf(notis.GrpcGenerateMsg, service) + err.Error())
 		return
 	}
 

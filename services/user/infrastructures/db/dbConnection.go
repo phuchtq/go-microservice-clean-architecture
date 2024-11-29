@@ -29,7 +29,7 @@ func ConnectDB() (*sql.DB, error) {
 
 	var cnnStr string = os.Getenv(envvar.DbCnnStr)
 	if cnnStr == "" {
-		logger.Println(fmt.Sprintf(notis.DbServerNotSetMsg, service))
+		logger.Println(fmt.Sprintf(notis.DbCnnStrNotSetMsg, service))
 		cnnStr = backUpDbCnnStr
 	}
 

@@ -25,7 +25,7 @@ func ConnectDB() (*sql.DB, error) {
 
 	var dbServer string = entities.GetDatabaseServer()
 	if dbServer == "" {
-		logger.Println(fmt.Sprintf(notis.DbServerNotSetMsg), service)
+		logger.Println(fmt.Sprintf(notis.DbServerNotSetMsg, "Role"), service)
 		dbServer = backUpDbServer
 	}
 

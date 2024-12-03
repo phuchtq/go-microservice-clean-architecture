@@ -10,7 +10,6 @@ import (
 )
 
 func GetAllRoles(c *gin.Context) {
-	//-----------------------------------------
 	service, err := business_logics.GenerateService()
 	if err != nil {
 		api_response.ProcessResponse(api_response.GenerateInvalidRequestAndSystemProblemModel(c, err))

@@ -145,6 +145,7 @@ Open your cmd/terminal/console and type this below command to clone this templat
 
 ```shell
 git clone https://github.com/Phuchtq/go-microservice-clean-architecture
+cd go-microservice-clean-architecture
 ```
 
 ### Start project
@@ -164,6 +165,11 @@ go run main.go user-service
 - If you want to start it independently:
 ```shell
 go run main.go <command-of-service>
+```
+
+- If you start by docker:
+```shell
+docker-compose up --build
 ```
 
 Note: you should change all of environment variables to your own ones

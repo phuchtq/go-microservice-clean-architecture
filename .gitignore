@@ -1,0 +1,7 @@
+*.exe
+*.exe~
+*.dll
+
+# As sample template, there is no need to hide the envrionment file
+# But in real application, it is highly recommended to ignore .env file
+# .env

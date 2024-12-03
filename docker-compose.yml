@@ -1,0 +1,81 @@
+# All services in this template using the same databse so the configuration of service 'db' is generally set in the root docker-compose.yml file
+# In most applications where services are independent, each service will have their unique configuration for database
+# In case they have their own databases, create seperated configurations and their dependencies
+
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      USER: ${USER}
+      PASSWORD: ${PASSWORD}
+      ## Public mail for service
+      SERVICE_EMAIL: ${SERVICE_EMAIL}
+      SECURITY_PASS: ${SECURITY_PASS}
+      HOST: ${HOST}
+      MAIL_PORT: ${MAIL_PORT}
+    ports:
+      - "your-port:your-port"
+    volumes:
+      - db_storage:/var/lib/postgresql/data # Persistent data in docker image - similar a cloud storage
+      ## - your-directory-to-db-script:/docker-entrypoint-initdb.d/your-script.sql -> Points to the file directory which contains script to generate database (if available)
+    networks:
+      - micro_template
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${USER}" ]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:latest
+    ports:
+      - "your-port:your-port"
+    networks:
+      - micro_template
+
+  rabbitmq: # Optional as this template, message broker service is embeded but no specific case for utilizing
+
+  # Add it for future need
+
+  user_service:
+    build:
+      context: .
+      dockerfile: services/user/Dockerfile # Dockerfile directory
+    environment:
+      - CNN_STR: ${CNN_STR}
+      - API_PORT: ${API_PORT}
+    ports:
+      - "your-port:your-port"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - micro_template
+
+  role_service:
+    build:
+      context: .
+      dockerfile: services/role/Dockerfile # Dockerfile directory
+    environment:
+      - CNN_STR: ${CNN_STR}
+      - API_PORT: ${API_PORT}
+    ports:
+      - "your-port:your-port"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - micro_template
+
+volumes:
+  db_storage:
+
+
+networks:
+  micro_template:

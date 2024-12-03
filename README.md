@@ -4,8 +4,8 @@
 
 This repo contains 2 services: **User** and **Role** which their structures adapt **Clean Architecture**.
 
-![Clean Architecture Overview](abcxyz.jpg)
-![Comparision gRPC vs REST](abcxyz.jpg)
+![Clean Architecture Overview](./static/images/clean_architect.png.jpg)
+![Comparision gRPC vs REST](./static/images/http1vs2.png.jpg)
 
 ## Folder hierarchy
 Main workflow from folder **services**

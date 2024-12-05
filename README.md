@@ -1,3 +1,5 @@
+[![Go Microservice - Clean Architecture template](https://github.com/Phuchtq/go-microservice-clean-architecture/actions/workflows/ci-ssript.yml/badge.svg)](https://github.com/Phuchtq/go-microservice-clean-architecture/actions/workflows/ci-ssript.yml)
+
 # Clean Architecture with Microservice sample template
  
 ## Introduction

@@ -4,7 +4,10 @@
 
 This repo contains 2 services: **User** and **Role** which their structures adapt **Clean Architecture**.
 
+### Clean Architecture Overview
 ![Clean Architecture Overview](./static/images/clean_architect.png)
+
+### gRPC vs REST
 ![Comparision gRPC vs REST](./static/images/http1vs2.png)
 
 ## Folder hierarchy
@@ -172,7 +175,11 @@ go run main.go <command-of-service>
 docker-compose up --build
 ```
 
-Note: you should change all of environment variables to your own ones
+**Note**: you should change all of environment variables to your own ones
+
+#### Connect me via: taikhoanhoconl123@gmail.com
+
+##### &#169; 
 
 
 

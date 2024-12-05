@@ -23,6 +23,11 @@ func InitializeAPIRoutes() {
 	var port string = os.Getenv(envvar.ApiPort)
 	if port == "" {
 		logger.Println(fmt.Sprintf(notis.ApiPortEnvNotSetMsg, "Role"))
+
+		if err := os.Setenv(envvar.ApiPort, backUpApiPort); err != nil {
+			logger.Println(fmt.Sprintf(notis.EnvSetErrMsg, envvar.ApiPort, backUpApiPort) + err.Error())
+		}
+
 		port = backUpApiPort
 	}
 	//-----------------------------------------

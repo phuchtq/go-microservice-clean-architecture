@@ -23,6 +23,11 @@ func InitializeAPIRoutes() {
 	var port string = os.Getenv(envvar.ApiPort)
 	if port == "" {
 		logger.Println(fmt.Sprintf(notis.ApiPortEnvNotSetMsg, "User"))
+
+		if err := os.Setenv(envvar.ApiPort, backUpApiPort); err != nil {
+			logger.Println(fmt.Sprintf(notis.EnvSetErrMsg, envvar.ApiPort, backUpApiPort) + err.Error())
+		}
+
 		port = backUpApiPort
 	}
 
@@ -46,9 +51,9 @@ func InitializeAPIRoutes() {
 	norGroup.PUT("/password/:password/confirm-password/:confirmPassword", api.ResetPassword)
 	norGroup.PUT("", api.VerifyAction)
 
-	logger.Println("User service starts on port: ", port)
-
 	if err := server.Run(":" + port); err != nil {
 		logger.Fatalln(fmt.Sprintf(notis.GinMsg, "User") + err.Error())
 	}
+
+	logger.Println("User service starts on port: ", port)
 }

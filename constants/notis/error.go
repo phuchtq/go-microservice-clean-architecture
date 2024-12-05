@@ -5,6 +5,8 @@ const (
 
 	EnvLoadErr string = "Error while loading .env file in %s service - "
 
+	EnvSetErrMsg string = "Error while setting environment variable %s with value %s - "
+
 	CmdExecuteErrMsg string = "Error while executing command in %s service - "
 
 	DbConnectionMsg string = "Error while connecting to database in %s service - "

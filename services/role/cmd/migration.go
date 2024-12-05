@@ -26,7 +26,7 @@ var migrateCmd = &cobra.Command{
 	Short:   "Command to execute database migration in role service.", // Short description about command
 	Aliases: []string{"command 1", "command 2", "command 3"},          // alternative commands
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("Execute databse migration in role service.")
+		log.Println("Execute database migration in role service.")
 		migrate()
 	},
 }

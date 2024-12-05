@@ -40,7 +40,7 @@ func ConnectDB() (*sql.DB, error) {
 		cnnStr = backUpDbCnnStr
 	}
 
-	cnn, err := sql.Open(entities.GetDatabaseServer(), os.Getenv(envvar.DbCnnStr))
+	cnn, err := sql.Open(dbServer, cnnStr)
 
 	if err != nil {
 		logger.Println(fmt.Sprintf(notis.DbConnectionMsg, service) + err.Error())

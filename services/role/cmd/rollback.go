@@ -26,7 +26,7 @@ var rollbackCmd = &cobra.Command{
 	Short:   "Command to execute database rollback in role service.", // Short description about command
 	Aliases: []string{"command 1", "command 2", "command 3"},         // alternative commands
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("Execute databse rollback in role service.")
+		log.Println("Execute database rollback in role service.")
 		rollback()
 	},
 }

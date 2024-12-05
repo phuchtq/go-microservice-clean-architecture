@@ -25,13 +25,18 @@ func ConnectDB() (*sql.DB, error) {
 
 	var dbServer string = entities.GetDatabaseServer()
 	if dbServer == "" {
-		logger.Println(fmt.Sprintf(notis.DbServerNotSetMsg, "Role"), service)
+		logger.Println(fmt.Sprintf(notis.DbServerNotSetMsg, service))
 		dbServer = backUpDbServer
 	}
 
 	var cnnStr string = os.Getenv(envvar.DbCnnStr)
 	if cnnStr == "" {
 		logger.Println(fmt.Sprintf(notis.DbServerNotSetMsg, service))
+
+		if err := os.Setenv(envvar.DbCnnStr, backUpDbCnnStr); err != nil {
+			logger.Println(fmt.Sprintf(notis.DbSetConnectionStrErrMsg, service) + err.Error())
+		}
+
 		cnnStr = backUpDbCnnStr
 	}
 

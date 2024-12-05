@@ -2,7 +2,7 @@ package db
 
 import (
 	"architecture_template/constants/notis"
-	envvar "architecture_template/services/role/constants/envVar"
+	envvar "architecture_template/services/user/constants/envVar"
 	"architecture_template/services/user/entities"
 	"database/sql"
 	"errors"
@@ -23,13 +23,18 @@ func ConnectDB() (*sql.DB, error) {
 
 	var dbServer string = entities.GetDatabaseServer()
 	if dbServer == "" {
-		logger.Println(fmt.Sprintf(notis.DbServerNotSetMsg, "User"), service)
+		logger.Println(fmt.Sprintf(notis.DbServerNotSetMsg, service))
 		dbServer = backUpDbServer
 	}
 
 	var cnnStr string = os.Getenv(envvar.DbCnnStr)
 	if cnnStr == "" {
 		logger.Println(fmt.Sprintf(notis.DbCnnStrNotSetMsg, service))
+
+		if err := os.Setenv(envvar.DbCnnStr, backUpDbCnnStr); err != nil {
+			logger.Println(fmt.Sprintf(notis.DbSetConnectionStrErrMsg, service) + err.Error())
+		}
+
 		cnnStr = backUpDbCnnStr
 	}
 

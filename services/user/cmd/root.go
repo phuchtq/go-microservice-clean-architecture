@@ -31,6 +31,9 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
+	// Add migrate/rollback database command (optional)
+	rootCmd.AddCommand(migrateCmd, rollbackCmd)
+
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalln(fmt.Sprintf(notis.CmdExecuteErrMsg, "User") + err.Error())
 	}

@@ -3,13 +3,7 @@ package notis
 const (
 	InternalErr string = "There is something wrong in the system during the process. Please try again later."
 
-	EnvLoadErr string = "Error while loading .env file in %s service - "
-
-	EnvSetErrMsg string = "Error while setting environment variable %s with value %s - "
-
 	CmdExecuteErrMsg string = "Error while executing command in %s service - "
-
-	DbConnectionMsg string = "Error while connecting to database in %s service - "
 
 	RoleRepoMsg string = "Error in role service - repository at "
 
@@ -19,11 +13,25 @@ const (
 
 	JsonMsg string = "Error in json helper - "
 
-	RedisMsg string = "Error in storing data to redis cache - data: "
-
 	GinMsg string = "Error while starting gin server in %s service - "
 
 	NetListeningMsg string = "Error while listening on port %s - "
+)
+
+// Env
+const (
+	EnvLoadErr string = "Error while loading .env file in %s service - "
+
+	EnvSetErrMsg string = "Error while setting environment variable %s with value %s - "
+)
+
+// Database
+const (
+	DbConnectionMsg string = "Error while connecting to database in %s service - "
+
+	DbMigrationErrMsg string = "Error while migrating database in %s service - "
+
+	DbSetConnectionStrErrMsg string = "Error while setting database connection string in %s service - "
 )
 
 // gRPC
@@ -42,6 +50,8 @@ const (
 	RedisStoreDataMsg string = "Error while storing data with Redis as key '%s' - "
 
 	RedisRefreshKeyMsg string = "Error while refreshing key with Redis as key '%s' - "
+
+	RedisMsg string = "Error in storing data to redis cache - data: "
 )
 
 // RabbitMQ

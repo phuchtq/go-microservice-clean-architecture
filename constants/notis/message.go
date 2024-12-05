@@ -5,6 +5,8 @@ const (
 	DbServerNotSetMsg string = "Database server in %s service is empty."
 
 	DbCnnStrNotSetMsg string = "Database connection string in %s service has not been set yet."
+
+	DbMigrationInformMsg string = "There is something wrong during database migration."
 )
 
 // API

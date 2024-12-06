@@ -14,7 +14,7 @@ COPY . .
 WORKDIR /app/services/role
 
 # Build service
-RUN go build -o role /cmd/root.go
+RUN go build -o role main.go
 
 # Command
 CMD ["./role"]

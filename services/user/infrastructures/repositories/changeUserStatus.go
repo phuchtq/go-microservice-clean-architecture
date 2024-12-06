@@ -30,7 +30,7 @@ func (tr *repo) ChangeUserStatus(status bool, id string, c context.Context) erro
 	helper.RefreshRedisCache[entities.User](
 		[]string{ // keys
 			redis_key.GetAllKey,
-			id,
+			fmt.Sprintf(redis_key.GetByIdKey, id),
 		},
 
 		[]string{ // messages

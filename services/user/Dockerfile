@@ -14,7 +14,7 @@ COPY . .
 WORKDIR /app/services/user
 
 # Build service
-RUN go build -o user /cmd/root.go
+RUN go build -o user main.go
 
 # Command
 CMD ["./user"]

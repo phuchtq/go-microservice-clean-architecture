@@ -14,6 +14,7 @@ func ResetPassword(c *gin.Context) {
 
 	if err != nil {
 		api_response.ProcessResponse(api_response.GenerateInvalidRequestAndSystemProblemModel(c, err))
+		return
 	}
 
 	api_response.ProcessResponse(response.ApiResponseModel{

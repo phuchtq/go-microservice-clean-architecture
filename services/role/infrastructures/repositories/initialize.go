@@ -8,6 +8,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// export ~~ public
+
 type repo struct {
 	db          *sql.DB
 	logger      *log.Logger

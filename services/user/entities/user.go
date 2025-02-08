@@ -20,7 +20,6 @@ type User struct {
 }
 
 func GetTable() string {
-	
 	return "Users"
 }
 

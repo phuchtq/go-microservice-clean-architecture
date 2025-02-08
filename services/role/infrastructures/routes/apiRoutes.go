@@ -50,6 +50,6 @@ func InitializeAPIRoutes() {
 	logger.Println("Role service starts on port: ", port)
 	//-----------------------------------------
 	if err := server.Run(":" + port); err != nil {
-		logger.Fatalln(fmt.Sprintf(notis.GinMsg, "Role") + err.Error())
+		logger.Fatal(fmt.Sprintf(notis.GinMsg, "Role") + err.Error())
 	}
 }
